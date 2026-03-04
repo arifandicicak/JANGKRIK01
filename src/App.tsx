@@ -181,16 +181,15 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [currentSession?.messages, isTyping]);
 
-    const ai = useMemo(() => {
-    // Ambil key dari env
+      const ai = useMemo(() => {
     const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || (import.meta.env.GEMINI_API_KEY as string) || '';
     
-    // Log buat ngecek di console
     console.log("Status API Key:", key ? "Terdeteksi ✅" : "Kosong/Gagal Muat ❌");
     
-    // FORMATNYA HARUS ADA { apiKey: ... }
-    return new GoogleGenAI(key); 
+    // Harus pake objek { apiKey: ... }
+    return new GoogleGenAI({ apiKey: key }); 
   }, []);
+  
   
   
   
