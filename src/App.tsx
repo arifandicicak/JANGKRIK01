@@ -252,7 +252,7 @@ export default function App() {
       }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: [{ role: 'user', parts }],
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
@@ -294,7 +294,7 @@ export default function App() {
       if (error.message?.includes("429") || error.message?.includes("finishReason: OTHER")) {
         alert("Sorry, you can't ask anymore (Limit). try again tomorrow!");
       } else {
-        alert("there is a connection or server problem, come back later.");
+        alert("there is a connection, server problem, or quota limit, come back later.");
       }
       // --- KODE BARU SELESAI ---
 
