@@ -244,7 +244,7 @@ export default function App() {
       }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: [{ role: 'user', parts }],
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
@@ -271,19 +271,30 @@ export default function App() {
         body: JSON.stringify({ ...aiMessage, sessionId: currentSessionId, sessionTitle: newTitle })
       });
 
-      setSessions(prev => prev.map(s => {
+            setSessions(prev => prev.map(s => {
         if (String(s.id) === String(currentSessionId)) {
           const newMessages = [...s.messages, aiMessage];
           return { ...s, messages: newMessages, title: newTitle || s.title };
         }
         return s;
       }));
-    } catch (error) {
+
+    } catch (error: any) {
       console.error("AI Error:", error);
+      
+      // --- KODE BARU MULAI DI SINI ---
+      if (error.message?.includes("429") || error.message?.includes("finishReason: OTHER")) {
+        alert("Sorry, you can't ask anymore (Limit). try again tomorrow!");
+      } else {
+        alert("there is a connection or server problem, come back later.");
+      }
+      // --- KODE BARU SELESAI ---
+
     } finally {
       setIsTyping(false);
     }
   };
+  
 
   const createNewChat = async () => {
     const newId = Date.now().toString();
