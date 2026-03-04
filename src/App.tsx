@@ -181,9 +181,16 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [currentSession?.messages, isTyping]);
 
-  const ai = useMemo(() => new GoogleGenAI({ 
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' 
-}), []);
+  const ai = useMemo(() => {
+  // Dia bakal nyari VITE_GEMINI_API_KEY dulu, kalau gak ada baru nyari GEMINI_API_KEY
+  const key = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY || '';
+  
+  // Baris ini penting buat lo ngecek di Inspect > Console pas webnya dibuka
+  console.log("Status API Key:", key ? "Terdeteksi " : "Kosong/Gagal Muat ");
+  
+  return new GoogleGenAI(key);
+}, []);
+  
   
   
 
