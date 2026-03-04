@@ -181,7 +181,10 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [currentSession?.messages, isTyping]);
 
-  const ai = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
+  const ai = useMemo(() => new GoogleGenAI({ 
+  apiKey: "AIzaSyCtie-f87UXPA8UunAXiBgXyn799oP7zsA" 
+}), []);
+  
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
