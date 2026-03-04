@@ -182,8 +182,9 @@ export default function App() {
   }, [currentSession?.messages, isTyping]);
 
   const ai = useMemo(() => new GoogleGenAI({ 
-  apiKey: "AIzaSyCtie-f87UXPA8UunAXiBgXyn799oP7zsA" 
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' 
 }), []);
+  
   
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
