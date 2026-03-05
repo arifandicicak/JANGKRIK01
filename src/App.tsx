@@ -253,7 +253,7 @@ export default function App() {
 
       // --- INI PERBAIKANNYA ---
       const model = ai.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-3-flash-preview",
         systemInstruction: SYSTEM_INSTRUCTION 
       });
 
