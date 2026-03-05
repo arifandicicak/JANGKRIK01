@@ -230,7 +230,7 @@ export default function App() {
     setSelectedImage(null);
     setIsTyping(true);
 
-    try {
+        try {
       // Save user message to backend
       await fetch('/api/messages', {
         method: 'POST',
@@ -251,21 +251,19 @@ export default function App() {
         });
       }
 
-      // --- PERBAIKAN DI SINI ---
-      // 1. Dapatkan modelnya dulu
+      // --- INI PERBAIKANNYA ---
       const model = ai.getGenerativeModel({ 
         model: "gemini-1.5-flash",
         systemInstruction: SYSTEM_INSTRUCTION 
       });
 
-      // 2. Panggil generateContent dari model tersebut
       const result = await model.generateContent({
         contents: [{ role: 'user', parts }],
       });
-
+      
       const response = await result.response;
       const responseText = response.text();
-      // --- AKHIR PERBAIKAN ---
+      // --- SELESAI PERBAIKAN ---
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -274,12 +272,13 @@ export default function App() {
         timestamp: Date.now()
       };
 
-      // Biar Jangkrik otomatis ngomong
+      // Tambahin ini biar Jangkrik otomatis ngomong pas jawab
       speak(aiMessage.text);
 
       const isFirstMessage = currentSession?.messages.length === 0;
       const newTitle = isFirstMessage ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') : undefined;
 
+      // Save AI message to backend
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 
@@ -296,6 +295,7 @@ export default function App() {
         }
         return s;
       }));
+          
 
     } catch (error: any) {
       console.error("AI Error:", error);
