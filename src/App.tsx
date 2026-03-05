@@ -207,7 +207,7 @@ export default function App() {
     }
   };
 
-  const handleSend = async (text: string = input) => {
+    const handleSend = async (text: string = input) => {
     if ((!text.trim() && !selectedImage) || !currentSessionId) return;
 
     const userMessage: Message = {
@@ -218,7 +218,6 @@ export default function App() {
       timestamp: Date.now()
     };
 
-    // Optimistic update
     setSessions(prev => prev.map(s => {
       if (String(s.id) === String(currentSessionId)) {
         return { ...s, messages: [...s.messages, userMessage] };
@@ -252,25 +251,35 @@ export default function App() {
         });
       }
 
-      const response = await ai.models.generateContent({
+      // --- PERBAIKAN DI SINI ---
+      // 1. Dapatkan modelnya dulu
+      const model = ai.getGenerativeModel({ 
         model: "gemini-1.5-flash",
-        contents: [{ role: 'user', parts }],
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-        },
+        systemInstruction: SYSTEM_INSTRUCTION 
       });
+
+      // 2. Panggil generateContent dari model tersebut
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+      });
+
+      const response = await result.response;
+      const responseText = response.text();
+      // --- AKHIR PERBAIKAN ---
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'model',
-        text: response.text || "I'm sorry, I couldn't process that.",
+        text: responseText || "I'm sorry, I couldn't process that.",
         timestamp: Date.now()
       };
+
+      // Biar Jangkrik otomatis ngomong
+      speak(aiMessage.text);
 
       const isFirstMessage = currentSession?.messages.length === 0;
       const newTitle = isFirstMessage ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') : undefined;
 
-      // Save AI message to backend
       await fetch('/api/messages', {
         method: 'POST',
         headers: { 
@@ -280,7 +289,7 @@ export default function App() {
         body: JSON.stringify({ ...aiMessage, sessionId: currentSessionId, sessionTitle: newTitle })
       });
 
-            setSessions(prev => prev.map(s => {
+      setSessions(prev => prev.map(s => {
         if (String(s.id) === String(currentSessionId)) {
           const newMessages = [...s.messages, aiMessage];
           return { ...s, messages: newMessages, title: newTitle || s.title };
@@ -290,19 +299,18 @@ export default function App() {
 
     } catch (error: any) {
       console.error("AI Error:", error);
+      const msg = error.message?.toLowerCase() || "";
       
-      // --- KODE BARU MULAI DI SINI ---
-      if (error.message?.includes("429") || error.message?.includes("finishReason: OTHER")) {
-        alert("Sorry, you can't ask anymore (Limit). try again tomorrow!");
+      if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
+        alert("Aduh, Jangkrik capek (Limit). Coba lagi besok ya, jatahnya 1500 chat kok!");
       } else {
-        alert("there is a connection, server problem, or quota limit, come back later.");
+        alert("Koneksi gagal atau API Key bermasalah. Cek dashboard Vercel lo!");
       }
-      // --- KODE BARU SELESAI ---
-
     } finally {
       setIsTyping(false);
     }
   };
+  
   
 
   const createNewChat = async () => {
