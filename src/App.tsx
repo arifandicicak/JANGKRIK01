@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { 
   MessageSquare, 
   User, 
@@ -182,13 +182,13 @@ export default function App() {
   }, [currentSession?.messages, isTyping]);
 
         const ai = useMemo(() => {
-    const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || (import.meta.env.GEMINI_API_KEY as string) || '';
-    
-    console.log("Status API Key:", key ? "Terdeteksi ✅" : "Kosong ❌");
-    
-    // INI YANG BENER, PAKE OBJEK:
-    return new GoogleGenAI({ apiKey: key }); 
-  }, []);
+  const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || "";
+  console.log("Status API Key:", key ? "Terdeteksi " : "Kosong ");
+  
+  // Perhatikan nama kelasnya: GoogleGenerativeAI
+  return new GoogleGenerativeAI(key); 
+}, []);
+  
   
   
   
