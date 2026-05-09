@@ -1086,7 +1086,15 @@ export default function App() {
                         transition={{ delay: 0.4 }}
                         className="text-2xl text-white/50 max-w-3xl leading-relaxed font-medium"
                       >
-                        Jangkrik or Arifandi Tanggahma is an ordinary school kid who really likes coding, is interested in coding, Arif has made his own game, class website, and get various certificates from dicoding.
+                        Jangkrik or Arifandi Tanggahma is an ordinary school kid who really likes coding, is interested in coding, Arif has made his own game: <a 
+  href="https://ariikksss.itch.io/mala" 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className="text-brand-green hover:underline mx-1"
+>
+  Mala
+</a>
+                        , class website, and get various certificates from dicoding.
                       </motion.p>
                     </div>
                   </section>
@@ -1133,10 +1141,10 @@ export default function App() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {[
-                        "Deep Learning Fundamentals",
-                        "Machine Learning Mastery",
-                        "AI Development with Python",
-                        "AI Engineer"
+                        "Deep Learning Fundamentals-Dicoding",
+                        "Machine Learning Mastery-Dicoding",
+                        "AI Development with Python-Dicoding",
+                        "AI Engineer-Dicoding"
                       ].map((cert, i) => (
                         <motion.div 
                           key={i} 
