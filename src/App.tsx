@@ -1092,8 +1092,8 @@ export default function App() {
   rel="noopener noreferrer" 
   className="text-brand-green hover:underline mx-1"
 >
-  Mala
-</a>
+  Indie Game Titled Mala
+</a> on itch.io
                         , class website, and get various certificates from dicoding.
                       </motion.p>
                     </div>
