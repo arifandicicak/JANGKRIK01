@@ -304,7 +304,7 @@ export default function App() {
       if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
         alert("Aduh, Jangkrik capek (Limit). Coba lagi besok ya, jatahnya 1500 chat kok!");
       } else {
-        alert("Koneksi gagal atau API Key bermasalah. Cek dashboard Vercel lo!");
+        alert("Koneksi gagal atau API Key bermasalah. Sedang perbaikan..");
       }
     } finally {
       setIsTyping(false);
