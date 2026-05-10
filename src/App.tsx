@@ -1087,7 +1087,7 @@ export default function App() {
                         transition={{ delay: 0.4 }}
                         className="text-2xl text-white/50 max-w-3xl leading-relaxed font-medium"
                       >
-                        Jangkrik or Arifandi Tanggahma is an ordinary school kid in SMA NEGERI 1 FAKFAK who really likes coding, is interested in coding, Arifandi Tanggahma create websites, Ai and games just with a smartphone, Arif has made his own game: <a 
+                        Jangkrik or Arifandi Tanggahma is an ordinary school kid in SMA NEGERI 1 FAKFAK who really likes coding, interested in coding, Arifandi Tanggahma create websites, Ai and games just with a smartphone, Arif has made his own game: <a 
   href="https://ariikksss.itch.io/mala" 
   target="_blank" 
   rel="noopener noreferrer" 
@@ -1095,7 +1095,7 @@ export default function App() {
 >
   Indie Game Titled Mala
 </a> on itch.io
-                        , class website, and get various certificates from dicoding, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
+                        , class website, and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
                       </motion.p>
                     </div>
                   </section>
