@@ -990,10 +990,11 @@ export default function App() {
                     }
                   }}
                   placeholder="Ask Jangkrik anything..."
-                  className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-3 px-3 text-sm md:text-lg max-h-32 font-medium placeholder:text-white/10 overflow-y-auto scrollbar-hide appearance-none"
+                  {/* DI SINI PERUBAHANNYA: text-xl (HP) dan py-4 biar pas */}
+                  className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-4 px-2 text-xl md:text-2xl font-bold placeholder:text-white/10 max-h-40 overflow-y-auto scrollbar-hide appearance-none text-white transition-all"
                 />
 
-                <div className="p-1.5">
+                <div className="p-2"> {/* Sedikit gedein padding container tombol */}
                   <button 
                     onClick={() => handleSend()}
                     disabled={(!input.trim() && !selectedImage) || isTyping}
@@ -1001,12 +1002,14 @@ export default function App() {
                       "w-14 h-14 rounded-full transition-all shadow-2xl flex items-center justify-center shrink-0",
                       (!input.trim() && !selectedImage) || isTyping
                         ? "bg-white/5 text-white/10"
-                        : "bg-brand-green text-brand-black hover:scale-105 active:scale-95 green-glow"
+                        : "bg-brand-green text-brand-black hover:scale-110 active:scale-90 green-glow"
                     )}
                   >
-                    <Send size={22} className={cn(input.trim() || selectedImage ? "translate-x-0.5 -translate-y-0.5" : "")} />
+                    {/* Icon send gedein dikit ke size 24 */}
+                    <Send size={24} className={cn(input.trim() || selectedImage ? "translate-x-0.5 -translate-y-0.5" : "")} />
                   </button>
                 </div>
+                
               </div>
             </div>
             
