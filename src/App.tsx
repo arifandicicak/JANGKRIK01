@@ -781,7 +781,7 @@ export default function App() {
                 </h2>
                 <p className="text-xl md:text-2xl text-white/40 font-medium max-w-xl mx-auto leading-relaxed">
                   The next generation of portfolio interaction. How can I assist you today?
-                  Before ask Jangkrik AI, Please create a new session on three lines in the top left corner
+                  Before asking Jangkrik AI, Please create a new session on three lines in the top left corner
                 </p>
               </div>
 
