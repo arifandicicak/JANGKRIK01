@@ -528,18 +528,20 @@ export default function App() {
       
       {/* Sidebar */}
       <AnimatePresence>
-        {(isSidebarOpen || window.innerWidth > 768) && (
-          <motion.aside
-            initial={{ x: -300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className={cn(
-              "fixed md:relative z-50 w-80 h-full bg-brand-black/80 backdrop-blur-2xl border-r border-white/5 flex flex-col shadow-2xl md:shadow-none",
-              !isSidebarOpen && "hidden md:flex"
-            )}
-          >
-            <div className="p-6 flex items-center justify-between md:hidden">
+        {isSidebarOpen && (
+      <motion.aside
+        initial={{ x: -300, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -300, opacity: 0 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className={cn(
+        "fixed z-50 w-80 h-full bg-brand-black/80 backdrop-blur-2xl border-r border-white/5 flex flex-col shadow-2xl"
+    // Di sini md:relative dibuang biar dia nggak motong layar desktop
+          )}
+        >
+        
+            <div className="p-6 flex items-center justify-between"> 
+              {/* md:hidden nya sudah dihapus di atas */}
               <div className="flex items-center gap-2">
                 <Bug size={20} className="text-brand-green" />
                 <span className="font-black text-sm tracking-widest uppercase">Menu</span>
@@ -547,7 +549,7 @@ export default function App() {
               <button 
                 onClick={() => setIsSidebarOpen(false)}
                 className="p-2 hover:bg-white/5 rounded-xl transition-colors"
-              >
+                >
                 <X size={20} />
               </button>
             </div>
@@ -694,10 +696,10 @@ export default function App() {
         <header className="h-20 border-b border-white/5 flex items-center justify-between px-6 md:px-10 bg-brand-black/40 backdrop-blur-xl z-40">
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="md:hidden p-3 hover:bg-white/5 rounded-2xl transition-colors"
-            >
-              <Menu size={24} />
+              onClick={() => setIsSidebarOpen(true)} // Ubah jadi true agar mantap ngebuka
+              className="p-3 hover:bg-white/5 rounded-2xl transition-colors" // HAPUS md:hidden DI SINI
+              >
+            <Menu size={24} />
             </button>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-brand-green/10 flex items-center justify-center text-brand-green border border-brand-green/20">
