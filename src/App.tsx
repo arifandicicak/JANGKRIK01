@@ -508,7 +508,7 @@ export default function App() {
   };
 
   return (
-  <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
+    <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
     
       {/* Background Effects */}
       <div className="fixed inset-0 grid-bg z-0" />
