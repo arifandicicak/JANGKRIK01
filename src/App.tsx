@@ -698,10 +698,10 @@ export default function App() {
           
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => setIsSidebarOpen(true)} // Ubah jadi true agar mantap ngebuka
-              className="p-3 hover:bg-white/5 rounded-2xl transition-colors" // HAPUS md:hidden DI SINI
-              >
-            <Menu size={24} />
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-3 hover:bg-white/5 rounded-2xl transition-colors"
+            >
+              <Menu size={24} />
             </button>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-brand-green/10 flex items-center justify-center text-brand-green border border-brand-green/20">
@@ -717,16 +717,16 @@ export default function App() {
           <div className="flex items-center gap-3">
             <button 
               type="button"
-              onClick={(e) => {
-                e.              className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
+              className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
             >
-            <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
-              <User size={18} />
-            </div>
-            <span className="font-black text-sm tracking-widest uppercase">Profile</span>
-          </button>
+              <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
+                <User size={18} />
+              </div>
+              <span className="font-black text-sm tracking-widest uppercase">Profile</span>
+            </button>
           </div>
         </header>
+        
 
         {/* Chat Area */}
         <div 
