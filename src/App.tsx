@@ -793,13 +793,13 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowPortfolio(true)}
-={() => setShowPortfolio(true)}
-                  className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
-                  <User size={28} />
-                  <span>EXPLORE PORTFOLIO</span>
-                </button>
+              className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
+              >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-shimmer" />
+              <Sparkles className="w-6 h-6 animate-pulse" />
+              <span className="relative">VIEW PORTFOLIO</span>
+              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full pt-10">
                   {[
