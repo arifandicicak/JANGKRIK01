@@ -973,7 +973,7 @@ export default function App() {
                     </div>
                   </button>
                 </div>
-
+                
                 <textarea
                   rows={1}
                   value={input}
@@ -990,7 +990,6 @@ export default function App() {
                     }
                   }}
                   placeholder="Ask Jangkrik anything..."
-                  {/* DI SINI PERUBAHANNYA: text-xl (HP) dan py-4 biar pas */}
                   className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-4 px-2 text-xl md:text-2xl font-bold placeholder:text-white/10 max-h-40 overflow-y-auto scrollbar-hide appearance-none text-white transition-all"
                 />
 
