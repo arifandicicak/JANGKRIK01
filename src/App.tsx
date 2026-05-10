@@ -714,18 +714,21 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative z-50"> {/* Ditambah z-50 biar bisa diklik */}
             <button 
               type="button"
-              className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
+              onClick={() => setShowPortfolio(true)} // Ditambah fungsi klik
+              className="group flex items-center gap-3 px-4 py-2 md:px-6 md:py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
             >
               <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
                 <User size={18} />
               </div>
-              <span className="font-black text-sm tracking-widest uppercase">Profile</span>
+              {/* Teks Profile otomatis sembunyi di HP biar gak sempit (Zoom 72% style) */}
+              <span className="font-black text-sm tracking-widest uppercase hidden md:inline">Profile</span>
             </button>
           </div>
         </header>
+        
         
 
         {/* Chat Area */}
@@ -769,16 +772,6 @@ export default function App() {
               </div>
 
               <div className="flex flex-col items-center gap-6 w-full">
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    clearCurrentSession();
-                  }}
-                  className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 font-black hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/50 transition-all uppercase tracking-widest flex items-center justify-center gap-3"
-                  >
-                  <Eraser size={20} />
-                  <span>Clear Chat</span>
-                </button>
                 
             <button 
               type="button"
