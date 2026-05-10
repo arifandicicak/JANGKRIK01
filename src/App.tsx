@@ -926,7 +926,8 @@ export default function App() {
         </div>
 
         {/* Input Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-brand-black via-brand-black/95 to-transparent z-40">
+        <div className="absolute bottom-0 left-0 right-0 p-2 md:p-10 bg-gradient-to-t from-brand-black via-brand-black/95 to-transparent z-40">
+          
           <div className="max-w-4xl mx-auto relative">
             {selectedImage && (
               <motion.div 
