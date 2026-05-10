@@ -508,7 +508,9 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-brand-black font-sans perspective-1000">
+    return (
+  <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
+    
       {/* Background Effects */}
       <div className="fixed inset-0 grid-bg z-0" />
       <div className="fixed inset-0 scanline z-10" />
@@ -693,7 +695,8 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col relative overflow-hidden z-20">
         {/* Header */}
-        <header className="h-20 border-b border-white/5 flex items-center justify-between px-6 md:px-10 bg-brand-black/40 backdrop-blur-xl z-40">
+        <header className="h-14 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-10 bg-brand-black/40 backdrop-blur-xl z-40">
+          
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(true)} // Ubah jadi true agar mantap ngebuka
@@ -751,8 +754,8 @@ export default function App() {
         <div 
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="flex-1 overflow-y-auto p-6 md:p-12 space-y-10 scrollbar-hide relative scroll-smooth pb-60"
-        >
+          className="flex-1 overflow-y-auto p-3 md:p-12 space-y-4 scrollbar-hide relative scroll-smooth pb-40"
+          >
           {showScrollButton && (
             <button 
               onClick={scrollToBottom}
