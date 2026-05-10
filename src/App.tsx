@@ -759,10 +759,10 @@ export default function App() {
               </motion.div>
               
               <div className="space-y-4">
-                <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-white font-display leading-none">
+                <h2 className="text-4xl md:text-8xl font-black tracking-tighter text-white font-display leading-none">
                   JANGKRIK <span className="text-brand-green">AI</span>
                 </h2>
-                <p className="text-xl md:text-2xl text-white/40 font-medium max-w-xl mx-auto leading-relaxed">
+                <p className="text-base md:text-2xl text-white/40 font-medium max-w-xl mx-auto leading-relaxed px-4">
                   The next generation of portfolio interaction. How can I assist you today?
                   Before asking Jangkrik AI, Please create a new session on three lines in the top left corner
                 </p>
@@ -1006,7 +1006,7 @@ export default function App() {
                     }
                   }}
                   placeholder="Ask Jangkrik anything..."
-                  className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-5 px-4 text-base md:text-lg max-h-40 font-medium placeholder:text-white/10 overflow-y-auto scrollbar-hide appearance-none"
+                  className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-3 px-3 text-sm md:text-lg max-h-32 font-medium placeholder:text-white/10 overflow-y-auto scrollbar-hide appearance-none"
                 />
 
                 <div className="p-1.5">
@@ -1026,7 +1026,7 @@ export default function App() {
               </div>
             </div>
             
-            <div className="flex justify-center gap-8 mt-6">
+            <div className="flex justify-center gap-4 mt-2 mb-2">
               <div className="flex items-center gap-2 opacity-20">
                 <div className="w-1 h-1 rounded-full bg-brand-green animate-pulse" />
                 <p className="text-[9px] font-black text-white uppercase tracking-[0.4em]">Secure Link</p>
