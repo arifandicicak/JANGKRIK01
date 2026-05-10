@@ -273,7 +273,7 @@ export default function App() {
       };
 
       // Tambahin ini biar Jangkrik otomatis ngomong pas jawab
-      speak(aiMessage.text);
+      //speak(aiMessage.text);
 
       const isFirstMessage = currentSession?.messages.length === 0;
       const newTitle = isFirstMessage ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') : undefined;
