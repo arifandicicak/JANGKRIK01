@@ -508,7 +508,6 @@ export default function App() {
   };
 
   return (
-    return (
   <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
     
       {/* Background Effects */}
@@ -719,28 +718,7 @@ export default function App() {
             <button 
               type="button"
               onClick={(e) => {
-                e.preventDefault();
-                clearCurrentSession();
-              }}
-              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-brand-green relative z-20 cursor-pointer"
-              title="Clear messages in this session"
-            >
-              <Eraser size={20} />
-            </button>
-            <button 
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                deleteCurrentSession();
-              }}
-              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-red-500 relative z-20 cursor-pointer"
-              title="Delete this chat session"
-            >
-              <Trash2 size={20} />
-            </button>
-            <button 
-              onClick={() => setShowPortfolio(true)}
-              className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
+                e.              className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
             >
             <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
               <User size={18} />
@@ -792,7 +770,28 @@ export default function App() {
 
               <div className="flex flex-col items-center gap-6 w-full">
                 <button 
-                  onClick={() => setShowPortfolio(true)}
+                  onClickpreventDefault();
+                clearCurrentSession();
+              }}
+              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-brand-green relative z-20 cursor-pointer"
+              title="Clear messages in this session"
+            >
+              <Eraser size={20} />
+            </button>
+            <button 
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                deleteCurrentSession();
+              }}
+              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-red-500 relative z-20 cursor-pointer"
+              title="Delete this chat session"
+            >
+              <Trash2 size={20} />
+            </button>
+            <button 
+              onClick={() => setShowPortfolio(true)}
+={() => setShowPortfolio(true)}
                   className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
