@@ -774,17 +774,6 @@ export default function App() {
               <div className="flex flex-col items-center gap-6 w-full">
                 
             <button 
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                deleteCurrentSession();
-              }}
-              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-red-500 relative z-20 cursor-pointer"
-              title="Delete this chat session"
-            >
-              <Trash2 size={20} />
-            </button>
-            <button 
               onClick={() => setShowPortfolio(true)}
               className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
               >
