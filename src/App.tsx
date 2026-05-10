@@ -770,14 +770,16 @@ export default function App() {
 
               <div className="flex flex-col items-center gap-6 w-full">
                 <button 
-                  onClickpreventDefault();
-                clearCurrentSession();
-              }}
-              className="p-3 hover:bg-white/5 rounded-2xl transition-colors text-white/20 hover:text-brand-green relative z-20 cursor-pointer"
-              title="Clear messages in this session"
-            >
-              <Eraser size={20} />
-            </button>
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearCurrentSession();
+                  }}
+                  className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white/40 font-black hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/50 transition-all uppercase tracking-widest flex items-center justify-center gap-3"
+                  >
+                  <Eraser size={20} />
+                  <span>Clear Chat</span>
+                </button>
+                
             <button 
               type="button"
               onClick={(e) => {
