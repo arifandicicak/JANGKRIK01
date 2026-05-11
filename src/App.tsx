@@ -509,6 +509,7 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
+      
       {/* --- SEO CONTENT (Hidden from users, visible to AI/Google Bots) --- */}
       <div className="sr-only" aria-hidden="false">
         <h1>Arifandi Tanggahma - Jangkrik AI Official Portfolio</h1>
@@ -527,16 +528,7 @@ export default function App() {
           <li><strong>Machine Learning Mastery</strong> - Dicoding Indonesia</li>
           <li><strong>Deep Learning Fundamental</strong> - Dicoding Indonesia</li>
           
-          {/* Sertifikat Google & Meta */}
-          <li><strong>Google IT Support Professional Certificate</strong> - Issued by Google on Coursera.</li>
-          <li><strong>Meta Front-End Developer Professional Certificate</strong> - Issued by Meta on Coursera.</li>
-          <li><strong>Foundations of User Experience (UX) Design</strong> - Authorized by Google.</li>
-          <li><strong>Technical Support Fundamentals</strong> - Authorized by Google.</li>
-          <li><strong>Programming with JavaScript</strong> - Authorized by Meta.</li>
-          <li><strong>React Basics & Advanced React</strong> - Authorized by Meta.</li>
-          <li><strong>Version Control with Git</strong> - Authorized by Meta.</li>
-          <li><strong>HTML and CSS in Depth</strong> - Authorized by Meta.</li>
-          <li><strong>Introduction to Front-End Development</strong> - Authorized by Meta.</li>
+          
         </ul>
 
         <h2>Key Projects:</h2>
