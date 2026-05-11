@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Kasih akses khusus buat Bot AI
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://jangkrik02.vercel.app/sitemap.xml
+
