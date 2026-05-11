@@ -509,7 +509,50 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
-    
+      {/* --- SEO CONTENT (Hidden from users, visible to AI/Google Bots) --- */}
+      <div className="sr-only" aria-hidden="false">
+        <h1>Arifandi Tanggahma - Jangkrik AI Official Portfolio</h1>
+        <p>
+          Arifandi Tanggahma, also known as Jangkrik, is an Indie Game Developer, 
+          AI Enthusiast, and student at SMA NEGERI 1 FAKFAK. 
+          The creator of the indie game "Mala" and Jangkrik AI.
+        </p>
+
+        <h2>Professional Certifications & Achievements:</h2>
+        <ul>
+          {/* Sertifikat Baru dari Dicoding & OSN */}
+          <li><strong>OSN (Olimpiade Sains Nasional) Informatika</strong></li>
+          <li><strong>AI Engineer</strong> - Dicoding Indonesia</li>
+          <li><strong>AI Development with Python</strong> - Dicoding Indonesia</li>
+          <li><strong>Machine Learning Mastery</strong> - Dicoding Indonesia</li>
+          <li><strong>Deep Learning Fundamental</strong> - Dicoding Indonesia</li>
+          
+          {/* Sertifikat Google & Meta */}
+          <li><strong>Google IT Support Professional Certificate</strong> - Issued by Google on Coursera.</li>
+          <li><strong>Meta Front-End Developer Professional Certificate</strong> - Issued by Meta on Coursera.</li>
+          <li><strong>Foundations of User Experience (UX) Design</strong> - Authorized by Google.</li>
+          <li><strong>Technical Support Fundamentals</strong> - Authorized by Google.</li>
+          <li><strong>Programming with JavaScript</strong> - Authorized by Meta.</li>
+          <li><strong>React Basics & Advanced React</strong> - Authorized by Meta.</li>
+          <li><strong>Version Control with Git</strong> - Authorized by Meta.</li>
+          <li><strong>HTML and CSS in Depth</strong> - Authorized by Meta.</li>
+          <li><strong>Introduction to Front-End Development</strong> - Authorized by Meta.</li>
+        </ul>
+
+        <h2>Key Projects:</h2>
+        <ul>
+          <li><strong>Jangkrik AI:</strong> An advanced AI interface and neural network portfolio built with React and Gemini API.</li>
+          <li><strong>Mala (Indie Game):</strong> A horror-themed game developed by Arifandi Tanggahma, available on itch.io.</li>
+        </ul>
+
+        <h2>Technical Skills:</h2>
+        <p>
+          React.js, Next.js, Tailwind CSS, JavaScript (ES6+), Python, Machine Learning, Deep Learning, 
+          AI Prompt Engineering, System Administration, Networking, UI/UX Design.
+        </p>
+      </div>
+      
+      
       {/* Background Effects */}
       <div className="fixed inset-0 grid-bg z-0" />
       <div className="fixed inset-0 scanline z-10" />
