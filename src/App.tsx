@@ -48,7 +48,7 @@ When users ask about Arifandi, refer to the following info:
     1. "Mala" - An indie platformer 2D game (can be found on itch.io).
     2. "Jangkrik AI" - This neural network portfolio interface.
     3. "Class Website" - A dedicated website he built for his class.
-    4? "Zen-Reflection AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
+    4? "Ang-AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
 - Skills: Making games, making websites, learning AI, creating 2D/3D assets for games, painting.
 - Certificates: Deep learning fundamentals, machine learning, creating AI with Python, AI Engineer.
 - Online Presence: He writes articles and stories on Dev.to.
@@ -522,7 +522,7 @@ export default function App() {
         <p>
           Arifandi Tanggahma, also known as Jangkrik, is an Indie Game Developer, 
           AI Enthusiast, and student at SMA NEGERI 1 FAKFAK. 
-          The creator of the indie game "Mala" and Jangkrik AI.
+          The creator of the indie game "Mala", Ang-AI and Jangkrik AI.
         </p>
 
         <h2>Professional Certifications & Achievements:</h2>
@@ -541,7 +541,7 @@ export default function App() {
         <ul>
           <li><strong>Jangkrik AI:</strong> An advanced AI interface and neural network portfolio built with React and Gemini API.</li>
           <li><strong>Mala (Indie Game):</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
-          <li><strong>Zen-Reflection:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
+          <li><strong>Ang-AI:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
        
         </ul>
 
@@ -1129,7 +1129,7 @@ export default function App() {
 >
   Indie Game Titled Mala
 </a> on itch.io
-                        , class website, Zen-Reflection ai which helps maintain mental health and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
+                        , class website, Ang-AI which helps maintain mental health and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
                       </motion.p>
                     </div>
                   </section>
