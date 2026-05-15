@@ -48,6 +48,7 @@ When users ask about Arifandi, refer to the following info:
     1. "Mala" - An indie platformer 2D game (can be found on itch.io).
     2. "Jangkrik AI" - This neural network portfolio interface.
     3. "Class Website" - A dedicated website he built for his class.
+    4? "Zen-Reflection AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
 - Skills: Making games, making websites, learning AI, creating 2D/3D assets for games, painting.
 - Certificates: Deep learning fundamentals, machine learning, creating AI with Python, AI Engineer.
 - Online Presence: He writes articles and stories on Dev.to.
