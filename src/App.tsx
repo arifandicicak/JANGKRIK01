@@ -539,7 +539,9 @@ export default function App() {
         <h2>Key Projects:</h2>
         <ul>
           <li><strong>Jangkrik AI:</strong> An advanced AI interface and neural network portfolio built with React and Gemini API.</li>
-          <li><strong>Mala (Indie Game):</strong> A horror-themed game developed by Arifandi Tanggahma, available on itch.io.</li>
+          <li><strong>Mala (Indie Game):</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
+          <li><strong>Zen-Reflection:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
+       
         </ul>
 
         <h2>Technical Skills:</h2>
@@ -1126,7 +1128,7 @@ export default function App() {
 >
   Indie Game Titled Mala
 </a> on itch.io
-                        , class website, and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
+                        , class website, Zen-Reflection ai which helps maintain mental health and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
                       </motion.p>
                     </div>
                   </section>
