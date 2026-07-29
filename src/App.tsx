@@ -48,7 +48,8 @@ When users ask about Arifandi, refer to the following info:
     1. "Mala" - An indie platformer 2D game (can be found on itch.io).
     2. "Jangkrik AI" - This neural network portfolio interface.
     3. "Class Website" - A dedicated website he built for his class.
-    4? "Ang-AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
+    4. "Ang-AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
+    5. "HellYah" - a 2.5D game first person vampire survivor like
 - Skills: Making games, making websites, learning AI, creating 2D/3D assets for games, painting.
 - Certificates: Deep learning fundamentals, machine learning, creating AI with Python, AI Engineer.
 - Online Presence: He writes articles and stories on Dev.to.
@@ -191,16 +192,8 @@ export default function App() {
   const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || "";
   console.log("Status API Key:", key ? "Terdeteksi " : "Kosong ");
   
-  // Perhatikan nama kelasnya: GoogleGenerativeAI
   return new GoogleGenerativeAI(key); 
 }, []);
-  
-  
-  
-  
-  
-  
-  
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -256,8 +249,7 @@ export default function App() {
           }
         });
       }
-
-      // --- INI PERBAIKANNYA ---
+          
       const model = ai.getGenerativeModel({ 
         model: "gemini-3-flash-preview",
         systemInstruction: SYSTEM_INSTRUCTION 
@@ -269,7 +261,7 @@ export default function App() {
       
       const response = await result.response;
       const responseText = response.text();
-      // --- SELESAI PERBAIKAN ---
+    
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -278,8 +270,7 @@ export default function App() {
         timestamp: Date.now()
       };
 
-      // Tambahin ini biar Jangkrik otomatis ngomong pas jawab
-      //speak(aiMessage.text);
+      
 
       const isFirstMessage = currentSession?.messages.length === 0;
       const newTitle = isFirstMessage ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') : undefined;
@@ -522,7 +513,8 @@ export default function App() {
         <p>
           Arifandi Tanggahma, also known as Jangkrik, is an Indie Game Developer, 
           AI Enthusiast, and student at SMA NEGERI 1 FAKFAK. 
-          The creator of the indie game "Mala", Ang-AI and Jangkrik AI.
+          The creator of the indie game "Mala" and "HellYah", Ang-AI and Jangkrik AI.
+          Arifandi Tanggahma adalah game developer muda dari indonesia timur, FakFak
         </p>
 
         <h2>Professional Certifications & Achievements:</h2>
@@ -540,7 +532,8 @@ export default function App() {
         <h2>Key Projects:</h2>
         <ul>
           <li><strong>Jangkrik AI:</strong> An advanced AI interface and neural network portfolio built with React and Gemini API.</li>
-          <li><strong>Mala (Indie Game):</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
+          <li><strong>Mala:</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
+          <li><strong>HellYah:</strong> A 2.5D first person Vampire Survivor where u have to survive from massive wave of enemies.</li>
           <li><strong>Ang-AI:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
        
         </ul>
