@@ -28,19 +28,47 @@ app.use(async (req, res, next) => {
     res.cookie('user_id', userId, { maxAge: 31536000000, httpOnly: true, secure: true, sameSite: "none" });
   }
   try {
-  const { data: user } = await supabase
+  const { data: user, error: userError } = await supabase
     .from('users')
     .select('id')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
+
+  if (userError) {
+    console.error("USER CHECK ERROR:", userError);
+    return res.status(500).json({
+      error: "User check failed",
+      details: userError.message,
+      hint: userError.hint
+    });
+  }
 
   if (!user) {
-    await supabase.from('users').insert([{
-      id: userId,
-      created_at: new Date().toISOString()
-    }]);
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert([{
+        id: userId,
+        created_at: new Date().toISOString()
+      }]);
+
+    if (insertError) {
+      console.error("USER INSERT ERROR:", insertError);
+
+      return res.status(500).json({
+        error: "Failed to create user",
+        details: insertError.message,
+        hint: insertError.hint
+      });
+    }
   }
-} catch (e) {}
+} catch (e: any) {
+  console.error("USER MIDDLEWARE ERROR:", e);
+
+  return res.status(500).json({
+    error: "User middleware failed",
+    details: e.message
+  });
+  }
   (req as any).userId = userId;
   next();
 });
