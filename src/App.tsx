@@ -47,8 +47,8 @@ When users ask about Arifandi, refer to the following info:
 - Projects: 
     1. "Mala" - An indie platformer 2D game (can be found on itch.io).
     2. "Jangkrik AI" - This neural network portfolio interface.
-    3. "Class Website" - A dedicated website he built for his class.
-    4. "Ang-AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
+    3. "SaptaDipta" - A dedicated website he built for his class.
+    4. "Ang AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
     5. "HellYah" - a 2.5D game first person vampire survivor like
 - Skills: Making games, making websites, learning AI, creating 2D/3D assets for games, painting.
 - Certificates: Deep learning fundamentals, machine learning, creating AI with Python, AI Engineer.
@@ -513,8 +513,8 @@ export default function App() {
         <p>
           Arifandi Tanggahma, also known as Jangkrik, is an Indie Game Developer, 
           AI Enthusiast, and student at SMA NEGERI 1 FAKFAK. 
-          The creator of the indie game "Mala" and "HellYah", Ang-AI and Jangkrik AI.
-          Arifandi Tanggahma adalah game developer muda dari indonesia timur, FakFak
+          The creator of the indie game "Mala" and "HellYah", Ang-AI, StudySuki AI and Jangkrik AI.
+          Arifandi Tanggahma is a game developer from indonesia timur, FakFak
         </p>
 
         <h2>Professional Certifications & Achievements:</h2>
@@ -535,6 +535,7 @@ export default function App() {
           <li><strong>Mala:</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
           <li><strong>HellYah:</strong> A 2.5D first person Vampire Survivor where u have to survive from massive wave of enemies.</li>
           <li><strong>Ang-AI:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
+          <li><strong>StudySuki AI</strong> a website for learning foreign languages and their dialects, sharpening your brain by playing chess and much more</li>
        
         </ul>
 
@@ -573,12 +574,12 @@ export default function App() {
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className={cn(
         "fixed z-50 w-80 h-full bg-brand-black/80 backdrop-blur-2xl border-r border-white/5 flex flex-col shadow-2xl"
-    // Di sini md:relative dibuang biar dia nggak motong layar desktop
+    
           )}
         >
         
             <div className="p-6 flex items-center justify-between"> 
-              {/* md:hidden nya sudah dihapus di atas */}
+              {/* md:hidden nya dihapus di atas */}
               <div className="flex items-center gap-2">
                 <Bug size={20} className="text-brand-green" />
                 <span className="font-black text-sm tracking-widest uppercase">Menu</span>
@@ -753,13 +754,13 @@ export default function App() {
           <div className="flex items-center gap-3 relative z-50"> {/* Ditambah z-50 biar bisa diklik */}
             <button 
               type="button"
-              onClick={() => setShowPortfolio(true)} // Ditambah fungsi klik
+              onClick={() => setShowPortfolio(true)}
               className="group flex items-center gap-3 px-4 py-2 md:px-6 md:py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-brand-green/50 hover:bg-brand-green/5 transition-all green-glow"
             >
               <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
                 <User size={18} />
               </div>
-              {/* Teks Profile otomatis sembunyi di HP biar gak sempit (Zoom 72% style) */}
+              {/* Teks Profile otomatis sembunyi di HP biar gak sempit */}
               <span className="font-black text-sm tracking-widest uppercase hidden md:inline">Profile</span>
             </button>
           </div>
@@ -1122,7 +1123,7 @@ export default function App() {
 >
   Indie Game Titled Mala
 </a> on itch.io
-                        , class website, Ang-AI which helps maintain mental health and get various certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
+                        ,Indie Game Titled HellYah,StudySuki AI a website for learning "languages" and others, SaptDipta(class website), Ang-AI which helps maintain mental health, certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
                       </motion.p>
                     </div>
                   </section>
