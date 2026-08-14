@@ -28,9 +28,19 @@ app.use(async (req, res, next) => {
     res.cookie('user_id', userId, { maxAge: 31536000000, httpOnly: true, secure: true, sameSite: "none" });
   }
   try {
-    const { data: user } = await supabase.from('users').select('id').eq('id', userId).single();
-    if (!user) await supabase.from('users').insert([{ id: userId, created_at: Date.now() }]);
-  } catch (e) {}
+  const { data: user } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', userId)
+    .single();
+
+  if (!user) {
+    await supabase.from('users').insert([{
+      id: userId,
+      created_at: new Date().toISOString()
+    }]);
+  }
+} catch (e) {}
   (req as any).userId = userId;
   next();
 });
