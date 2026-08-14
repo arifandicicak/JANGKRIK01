@@ -42,12 +42,6 @@ app.get("/api/sessions", async (req, res) => {
 });
 
 app.post("/api/sessions", async (req, res) => {
-  const { id, title } = req.body;
-  await supabase.from('sessions').insert([{ id, user_id: (req as any).userId, title, created_at: Date.now() }]);
-  res.json({ success: true });
-});
-
-app.post("/api/sessions", async (req, res) => {
   try {
     const { id, title } = req.body;
     const userId = (req as any).userId;
