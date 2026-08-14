@@ -50,6 +50,7 @@ When users ask about Arifandi, refer to the following info:
     3. "SaptaDipta" - A dedicated website he built for his class.
     4. "Ang AI" - a website that takes care of your mental health, organizes your schedule, and becomes your listener and savior before you sink into darkness.
     5. "HellYah" - a 2.5D game first person vampire survivor like
+    6. "StudySuki AI" - a website for learning foreign languages and dialects, sharpening your brain with chess, etc.
 - Skills: Making games, making websites, learning AI, creating 2D/3D assets for games, painting.
 - Certificates: Deep learning fundamentals, machine learning, creating AI with Python, AI Engineer.
 - Online Presence: He writes articles and stories on Dev.to.
@@ -104,7 +105,7 @@ export default function App() {
       });
       
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({}));
         const message = errorData.hint 
           ? `${errorData.error}\n\nHint: ${errorData.hint}`
           : (errorData.error || 'Failed to rename session');
@@ -113,10 +114,10 @@ export default function App() {
     } catch (e: any) {
       console.error("Failed to rename session", e);
       alert(e.message || "Failed to rename session. Please try again.");
-      // Rollback on error
       setSessions(previousSessions);
     }
   };
+
   const recognitionRef = useRef<any>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -125,18 +126,20 @@ export default function App() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const currentSession = useMemo(() => sessions.find(s => String(s.id) === String(currentSessionId)) || null, [sessions, currentSessionId]);
+
+  const currentSession = useMemo(() => 
+    sessions.find(s => String(s.id) === String(currentSessionId)) || null, 
+    [sessions, currentSessionId]
+  );
 
   const getUserId = () => {
-  let uid = localStorage.getItem('jangkrik_user_id');
-
-  if (!uid) {
-    uid = crypto.randomUUID();
-    localStorage.setItem('jangkrik_user_id', uid);
-  }
-
-  return uid;
-};
+    let uid = localStorage.getItem('jangkrik_user_id');
+    if (!uid) {
+      uid = crypto.randomUUID();
+      localStorage.setItem('jangkrik_user_id', uid);
+    }
+    return uid;
+  };
 
   const fetchSessions = async () => {
     try {
@@ -155,7 +158,7 @@ export default function App() {
           setCurrentSessionId(null);
         }
       } else {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({}));
         if (errorData.hint) {
           setDbError(errorData.hint);
         }
@@ -167,10 +170,8 @@ export default function App() {
 
   useEffect(() => {
     const init = async () => {
-      // Sync cookie with localStorage ID
       const uid = getUserId();
       document.cookie = `user_id=${uid}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
-      
       await fetchSessions();
       setIsLoading(false);
     };
@@ -190,12 +191,11 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [currentSession?.messages, isTyping]);
 
-        const ai = useMemo(() => {
-  const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || "";
-  console.log("Status API Key:", key ? "Terdeteksi " : "Kosong ");
-  
-  return new GoogleGenerativeAI(key); 
-}, []);
+  const ai = useMemo(() => {
+    const key = (import.meta.env.VITE_GEMINI_API_KEY as string) || "";
+    console.log("Status API Key:", key ? "Terdeteksi" : "Kosong");
+    return new GoogleGenerativeAI(key); 
+  }, []);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -207,183 +207,175 @@ export default function App() {
       reader.readAsDataURL(file);
     }
   };
-  const handleSend = async (text: string = input) => {
-  if (!text.trim() && !selectedImage) return;
 
-  let sessionId = currentSessionId;
-  let isBrandNewSession = false;
+  const createNewChat = async (): Promise<string | null> => {
+    const newId = Date.now().toString();
+    const newSession: ChatSession = {
+      id: newId,
+      title: 'New Chat',
+      messages: [],
+      createdAt: Date.now()
+    };
 
-  // 1. Buat session baru jika belum ada
-  if (!sessionId) {
-    sessionId = await createNewChat();
-    if (!sessionId) {
-      alert("Gagal membuat sesi chat.");
-      return;
+    try {
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': getUserId()
+        },
+        body: JSON.stringify(newSession)
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        console.error("Failed to create session server-side:", data);
+      }
+    } catch (error) {
+      console.error("Create session network error:", error);
     }
-    isBrandNewSession = true;
-  }
 
-  const userMessage: Message = {
-    id: Date.now().toString(),
-    role: 'user',
-    text,
-    imageData: selectedImage || undefined,
-    timestamp: Date.now()
+    setSessions(prev => [newSession, ...prev]);
+    setCurrentSessionId(newId);
+    setIsSidebarOpen(false);
+
+    return newId;
   };
 
-  // 2. Terapkan pesan ke state dengan aman
-  setSessions(prev => {
-    // Jika baru dibuat, pastikan session target ada di dalam array
-    const exists = prev.some(s => String(s.id) === String(sessionId));
-    if (!exists) {
-      return [{
-        id: sessionId!,
-        title: 'New Chat',
-        messages: [userMessage],
-        createdAt: Date.now()
-      }, ...prev];
-    }
+  const handleSend = async (text: string = input) => {
+    if (!text.trim() && !selectedImage) return;
 
-    return prev.map(s => {
-      if (String(s.id) === String(sessionId)) {
-        return { ...s, messages: [...s.messages, userMessage] };
+    let sessionId = currentSessionId;
+    let isBrandNewSession = false;
+
+    if (!sessionId) {
+      sessionId = await createNewChat();
+      if (!sessionId) {
+        alert("Gagal membuat sesi chat.");
+        return;
       }
-      return s;
-    });
-  });
-
-  const currentImage = selectedImage;
-  setInput('');
-  setSelectedImage(null);
-  setIsTyping(true);
-
-  try {
-  await fetch('/api/messages', {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'x-user-id': getUserId()
-    },
-    body: JSON.stringify({ ...userMessage, sessionId })
-  });
-} catch (dbErr) {
-  console.warn("Gagal simpan pesan user ke DB:", dbErr);
-  }
-
-    const parts: any[] = [{ text: text || "What is in this image?" }];
-    if (currentImage) {
-      parts.push({
-        inlineData: {
-          mimeType: "image/jpeg",
-          data: currentImage.split(',')[1]
-        }
-      });
+      isBrandNewSession = true;
     }
 
-    const model = ai.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: SYSTEM_INSTRUCTION 
-    });
-
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts }],
-    });
-
-    const response = await result.response;
-    const responseText = response.text();
-
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'model',
-      text: responseText || "I'm sorry, I couldn't process that.",
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      text,
+      imageData: selectedImage || undefined,
       timestamp: Date.now()
     };
 
-    const newTitle = (isBrandNewSession || currentSession?.messages.length === 0) 
-      ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') 
-      : undefined;
-
-    // Simpan pesan AI ke database
-    await fetch('/api/messages', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-user-id': getUserId()
-      },
-      body: JSON.stringify({ ...aiMessage, sessionId, sessionTitle: newTitle })
-    });
-
-    setSessions(prev => prev.map(s => {
-      if (String(s.id) === String(sessionId)) {
-        return { 
-          ...s, 
-          messages: [...s.messages, aiMessage], 
-          title: newTitle || s.title 
-        };
+    setSessions(prev => {
+      const exists = prev.some(s => String(s.id) === String(sessionId));
+      if (!exists) {
+        return [{
+          id: sessionId!,
+          title: 'New Chat',
+          messages: [userMessage],
+          createdAt: Date.now()
+        }, ...prev];
       }
-      return s;
-    }));
 
-  } catch (error: any) {
-    console.error("AI Error:", error);
-    const msg = error.message?.toLowerCase() || "";
-
-    if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
-      alert("Sorry, You reached the limit. Try again later!");
-    } else {
-      alert("Connection failed.");
-    }
-  } finally {
-    setIsTyping(false);
-  }
-};
-  
-
-
-  const createNewChat = async (): Promise<string | null> => {
-  const newId = Date.now().toString();
-
-  const newSession: ChatSession = {
-    id: newId,
-    title: 'New Chat',
-    messages: [],
-    createdAt: Date.now()
-  };
-
-  try {
-    const res = await fetch('/api/sessions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-id': getUserId()
-      },
-      body: JSON.stringify(newSession)
+      return prev.map(s => {
+        if (String(s.id) === String(sessionId)) {
+          return { ...s, messages: [...s.messages, userMessage] };
+        }
+        return s;
+      });
     });
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      console.error("Failed to create session server-side:", data);
-      // Opsional: Jika backend bermasalah, tetap izinkan fallback lokal/UI
+    const currentImage = selectedImage;
+    setInput('');
+    setSelectedImage(null);
+    setIsTyping(true);
+
+    // Save user message to DB safely
+    try {
+      await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': getUserId()
+        },
+        body: JSON.stringify({ ...userMessage, sessionId })
+      });
+    } catch (dbErr) {
+      console.warn("Gagal simpan pesan user ke DB:", dbErr);
     }
 
-    // Selalu update state lokal
-    setSessions(prev => [newSession, ...prev]);
-    setCurrentSessionId(newId);
-    setIsSidebarOpen(false);
+    try {
+      const parts: any[] = [{ text: text || "What is in this image?" }];
+      if (currentImage) {
+        parts.push({
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: currentImage.split(',')[1]
+          }
+        });
+      }
 
-    return newId;
-  } catch (error) {
-    console.error("Create session network error:", error);
-    
-    // Fallback: Tetap buat sesi di UI lokal agar UX tidak terputus
-    setSessions(prev => [newSession, ...prev]);
-    setCurrentSessionId(newId);
-    setIsSidebarOpen(false);
-    
-    return newId;
-  }
-};
+      // Mendukung model gemini-2.5-flash atau gemini-1.5-flash
+      const model = ai.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        systemInstruction: SYSTEM_INSTRUCTION 
+      });
 
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts }],
+      });
+
+      const response = await result.response;
+      const responseText = response.text();
+
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'model',
+        text: responseText || "I'm sorry, I couldn't process that.",
+        timestamp: Date.now()
+      };
+
+      const newTitle = (isBrandNewSession || currentSession?.messages.length === 0) 
+        ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') 
+        : undefined;
+
+      // Save AI message to DB safely
+      try {
+        await fetch('/api/messages', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-user-id': getUserId()
+          },
+          body: JSON.stringify({ ...aiMessage, sessionId, sessionTitle: newTitle })
+        });
+      } catch (dbErr) {
+        console.warn("Gagal simpan pesan AI ke DB:", dbErr);
+      }
+
+      setSessions(prev => prev.map(s => {
+        if (String(s.id) === String(sessionId)) {
+          return { 
+            ...s, 
+            messages: [...s.messages, aiMessage], 
+            title: newTitle || s.title 
+          };
+        }
+        return s;
+      }));
+
+    } catch (error: any) {
+      console.error("AI Error:", error);
+      const msg = error.message?.toLowerCase() || "";
+
+      if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
+        alert("Sorry, You reached the limit. Try again later!");
+      } else {
+        alert(`AI Error: ${error.message || "Connection failed."}`);
+      }
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   const deleteSession = async (id: string, e?: React.MouseEvent) => {
     if (e) {
@@ -400,20 +392,17 @@ export default function App() {
         headers: { 'x-user-id': getUserId() }
       });
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to delete session');
       }
       
       setSessions(prev => {
         const filtered = prev.filter(s => String(s.id) !== String(id));
-        
-        // Handle redirection side effects
         if (filtered.length === 0) {
           setTimeout(() => createNewChat(), 0);
         } else if (String(currentSessionId) === String(id)) {
           setTimeout(() => setCurrentSessionId(filtered[0].id), 0);
         }
-        
         return filtered;
       });
     } catch (e) {
@@ -432,7 +421,7 @@ export default function App() {
         headers: { 'x-user-id': getUserId() }
       });
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to clear history');
       }
       setSessions([]);
@@ -442,11 +431,6 @@ export default function App() {
       console.error("Failed to clear all history", e);
       alert("Failed to clear all history. Please try again.");
     }
-  };
-
-  const deleteCurrentSession = async () => {
-    if (!currentSessionId) return;
-    await deleteSession(currentSessionId);
   };
 
   const deleteMessage = async (messageId: string) => {
@@ -469,40 +453,6 @@ export default function App() {
       console.error("Failed to delete message", e);
     }
   };
-
-  const clearCurrentSession = async () => {
-    if (!currentSessionId) return;
-    const confirmed = window.confirm("Clear all messages in this session?");
-    if (!confirmed) return;
-    
-    try {
-      const response = await fetch(`/api/sessions/${currentSessionId}/messages`, { 
-        method: 'DELETE',
-        headers: { 'x-user-id': getUserId() }
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to clear session');
-      }
-      setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(currentSessionId)) {
-          return { ...s, messages: [] };
-        }
-        return s;
-      }));
-    } catch (e) {
-      console.error("Failed to clear session", e);
-      alert("Failed to clear session history. Please try again.");
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="h-screen w-screen bg-brand-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-green"></div>
-      </div>
-    );
-  }
 
   const startSpeechToText = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -553,10 +503,18 @@ export default function App() {
     setIsSpeaking(false);
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen bg-brand-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-green"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-brand-black font-sans text-[13px] md:text-base">
       
-      {/* --- SEO CONTENT (Hidden from users, visible to AI/Google Bots) --- */}
+      {/* SEO CONTENT (Hidden from users) */}
       <div className="sr-only" aria-hidden="false">
         <h1>Arifandi Tanggahma - Jangkrik AI Official Portfolio</h1>
         <p>
@@ -568,14 +526,11 @@ export default function App() {
 
         <h2>Professional Certifications & Achievements:</h2>
         <ul>
-          {/* Sertifikat Baru dari Dicoding & OSN */}
           <li><strong>OSN (Olimpiade Sains Nasional) Informatika</strong></li>
           <li><strong>AI Engineer</strong> - Dicoding Indonesia</li>
           <li><strong>AI Development with Python</strong> - Dicoding Indonesia</li>
           <li><strong>Machine Learning Mastery</strong> - Dicoding Indonesia</li>
           <li><strong>Deep Learning Fundamental</strong> - Dicoding Indonesia</li>
-          
-          
         </ul>
 
         <h2>Key Projects:</h2>
@@ -583,9 +538,8 @@ export default function App() {
           <li><strong>Jangkrik AI:</strong> An advanced AI interface and neural network portfolio built with React and Gemini API.</li>
           <li><strong>Mala:</strong> A 2D platformer game developed by Arifandi Tanggahma, available on itch.io.</li>
           <li><strong>HellYah:</strong> A 2.5D first person Vampire Survivor where u have to survive from massive wave of enemies.</li>
-          <li><strong>Ang-AI:</strong> An a website that functions as counseling, maintaining mental health and daily schedules, developed by Arifandi Tanggahma.</li>
-          <li><strong>StudySuki AI</strong> a website for learning foreign languages and their dialects, sharpening your brain by playing chess and much more</li>
-       
+          <li><strong>Ang-AI:</strong> An a website that functions as counseling, maintaining mental health and daily schedules.</li>
+          <li><strong>StudySuki AI:</strong> A website for learning foreign languages and dialects, sharpening brain with chess, etc.</li>
         </ul>
 
         <h2>Technical Skills:</h2>
@@ -594,8 +548,7 @@ export default function App() {
           AI Prompt Engineering, System Administration, Networking, UI/UX Design.
         </p>
       </div>
-      
-      
+
       {/* Background Effects */}
       <div className="fixed inset-0 grid-bg z-0" />
       <div className="fixed inset-0 scanline z-10" />
@@ -616,19 +569,14 @@ export default function App() {
       {/* Sidebar */}
       <AnimatePresence>
         {isSidebarOpen && (
-      <motion.aside
-        initial={{ x: -300, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: -300, opacity: 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className={cn(
-        "fixed z-50 w-80 h-full bg-brand-black/80 backdrop-blur-2xl border-r border-white/5 flex flex-col shadow-2xl"
-    
-          )}
-        >
-        
+          <motion.aside
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed z-50 w-80 h-full bg-brand-black/80 backdrop-blur-2xl border-r border-white/5 flex flex-col shadow-2xl"
+          >
             <div className="p-6 flex items-center justify-between"> 
-              {/* md:hidden nya dihapus di atas */}
               <div className="flex items-center gap-2">
                 <Bug size={20} className="text-brand-green" />
                 <span className="font-black text-sm tracking-widest uppercase">Menu</span>
@@ -636,7 +584,7 @@ export default function App() {
               <button 
                 onClick={() => setIsSidebarOpen(false)}
                 className="p-2 hover:bg-white/5 rounded-xl transition-colors"
-                >
+              >
                 <X size={20} />
               </button>
             </div>
@@ -781,7 +729,6 @@ export default function App() {
       <main className="flex-1 flex flex-col relative overflow-hidden z-20">
         {/* Header */}
         <header className="h-14 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-10 bg-brand-black/40 backdrop-blur-xl z-40">
-          
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -800,7 +747,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 relative z-50"> {/* Ditambah z-50 biar bisa diklik */}
+          <div className="flex items-center gap-3 relative z-50">
             <button 
               type="button"
               onClick={() => setShowPortfolio(true)}
@@ -809,20 +756,17 @@ export default function App() {
               <div className="w-8 h-8 rounded-xl bg-brand-green/10 flex items-center justify-center text-brand-green group-hover:scale-110 transition-transform">
                 <User size={18} />
               </div>
-              {/* Teks Profile otomatis sembunyi di HP biar gak sempit */}
               <span className="font-black text-sm tracking-widest uppercase hidden md:inline">Profile</span>
             </button>
           </div>
         </header>
-        
-        
 
         {/* Chat Area */}
         <div 
           ref={chatContainerRef}
           onScroll={handleScroll}
           className="flex-1 overflow-y-auto p-3 md:p-12 space-y-4 scrollbar-hide relative scroll-smooth pb-40"
-          >
+        >
           {showScrollButton && (
             <button 
               onClick={scrollToBottom}
@@ -831,7 +775,8 @@ export default function App() {
               <Plus size={24} className="rotate-45" />
             </button>
           )}
-          {!currentSession || currentSession.messages.length === 0 ? (
+
+          {(!currentSession || currentSession.messages.length === 0) ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-12 max-w-4xl mx-auto">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0, rotateY: 45 }}
@@ -858,16 +803,15 @@ export default function App() {
               </div>
 
               <div className="flex flex-col items-center gap-6 w-full">
-                
-            <button 
-              onClick={() => setShowPortfolio(true)}
-              className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
-              >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-shimmer" />
-              <Sparkles className="w-6 h-6 animate-pulse" />
-              <span className="relative">VIEW PORTFOLIO</span>
-              <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </button>
+                <button 
+                  onClick={() => setShowPortfolio(true)}
+                  className="group relative flex items-center gap-4 px-10 py-5 rounded-3xl bg-brand-green text-brand-black font-black text-xl hover:scale-105 active:scale-95 transition-all green-glow shadow-2xl overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-shimmer" />
+                  <Sparkles className="w-6 h-6 animate-pulse" />
+                  <span className="relative">VIEW PORTFOLIO</span>
+                  <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full pt-10">
                   {[
@@ -984,9 +928,9 @@ export default function App() {
                     <Bug size={22} />
                   </div>
                   <div className="bg-brand-green/[0.03] border border-brand-green/20 p-5 md:p-7 rounded-[2.5rem] rounded-tl-none flex gap-1.5 items-center shadow-2xl">
-                    <div className="typing-dot" style={{ animationDelay: '0ms' }} />
-                    <div className="typing-dot" style={{ animationDelay: '150ms' }} />
-                    <div className="typing-dot" style={{ animationDelay: '300ms' }} />
+                    <div className="w-2 h-2 rounded-full bg-brand-green animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 rounded-full bg-brand-green animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 rounded-full bg-brand-green animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               )}
@@ -997,7 +941,6 @@ export default function App() {
 
         {/* Input Area */}
         <div className="absolute bottom-0 left-0 right-0 p-2 md:p-10 bg-gradient-to-t from-brand-black via-brand-black/95 to-transparent z-40">
-          
           <div className="max-w-4xl mx-auto relative">
             {selectedImage && (
               <motion.div 
@@ -1079,7 +1022,7 @@ export default function App() {
                   className="flex-1 bg-transparent border-none focus:ring-0 outline-none resize-none py-4 px-2 text-xl md:text-2xl font-bold placeholder:text-white/10 max-h-40 overflow-y-auto scrollbar-hide appearance-none text-white transition-all"
                 />
 
-                <div className="p-2"> {/* Sedikit gedein padding container tombol */}
+                <div className="p-2">
                   <button 
                     onClick={() => handleSend()}
                     disabled={(!input.trim() && !selectedImage) || isTyping}
@@ -1090,11 +1033,9 @@ export default function App() {
                         : "bg-brand-green text-brand-black hover:scale-110 active:scale-90 green-glow"
                     )}
                   >
-                    {/* Icon send gedein dikit ke size 24 */}
                     <Send size={24} className={cn(input.trim() || selectedImage ? "translate-x-0.5 -translate-y-0.5" : "")} />
                   </button>
                 </div>
-                
               </div>
             </div>
             
@@ -1165,14 +1106,13 @@ export default function App() {
                         className="text-2xl text-white/50 max-w-3xl leading-relaxed font-medium"
                       >
                         Jangkrik or Arifandi Tanggahma is an ordinary school kid in SMA NEGERI 1 FAKFAK who really likes coding, interested in coding, Arifandi Tanggahma create websites, Ai and games just with a smartphone, Arif has made his own game: <a 
-  href="https://ariikksss.itch.io/mala" 
-  target="_blank" 
-  rel="noopener noreferrer" 
-  className="text-brand-green hover:underline mx-1"
->
-  Indie Game Titled Mala
-</a> on itch.io
-                        ,Indie Game Titled HellYah,StudySuki AI a website for learning "languages" and others, SaptDipta(class website), Ang-AI which helps maintain mental health, certificates from dicoding, AI Enthusiast, Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
+                          href="https://ariikksss.itch.io/mala" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-brand-green hover:underline mx-1"
+                        >
+                          Indie Game Titled Mala
+                        </a> on itch.io, Indie Game Titled HellYah, StudySuki AI a website for learning "languages" and others, SaptaDipta(class website), Ang-AI which helps maintain mental health, certificates from dicoding, AI Enthusiast. Arifandi Tanggahma is proof that the greatest power comes from the brain, not from the tools you have.
                       </motion.p>
                     </div>
                   </section>
@@ -1274,6 +1214,7 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
       {/* Database Error Modal */}
       <AnimatePresence>
         {dbError && (
@@ -1360,7 +1301,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE TABLE IF NOT EXISTS messages (
   id TEXT PRIMARY KEY,
   session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE,
-  role TEXT NOT NULL CHECK (role IN ('user', 'model')),
+  role TEXT NOT NULL CHECK (role IN ('role' IN ('user', 'model')),
   text TEXT NOT NULL,
   image_data TEXT,
   timestamp TIMESTAMPTZ DEFAULT NOW()
