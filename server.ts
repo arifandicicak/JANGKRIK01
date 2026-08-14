@@ -47,10 +47,46 @@ app.post("/api/sessions", async (req, res) => {
   res.json({ success: true });
 });
 
-app.post("/api/messages", async (req, res) => {
-  const { id, sessionId, role, text, imageData } = req.body;
-  await supabase.from('messages').insert([{ id, session_id: sessionId, role, text, timestamp: Date.now(), image_data: imageData || null }]);
-  res.json({ success: true });
+app.post("/api/sessions", async (req, res) => {
+  try {
+    const { id, title } = req.body;
+    const userId = (req as any).userId;
+
+    const { data, error } = await supabase
+      .from("sessions")
+      .insert([{
+        id,
+        user_id: userId,
+        title: title || "New Chat",
+        created_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Supabase session error:", error);
+
+      return res.status(500).json({
+        success: false,
+        error: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      session: data
+    });
+
+  } catch (error: any) {
+    console.error("Create session exception:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: error.message || "Unknown error"
+    });
+  }
 });
 
 // Serve Static Files (Vercel Mode)
