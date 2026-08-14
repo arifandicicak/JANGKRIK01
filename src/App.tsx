@@ -229,7 +229,7 @@ export default function App() {
     };
 
     setSessions(prev => prev.map(s => {
-      if (String(s.id) === String(currentSessionId)) {
+      if (String(s.id) === String(sessionId)) {
         return { ...s, messages: [...s.messages, userMessage] };
       }
       return s;
@@ -297,7 +297,7 @@ export default function App() {
       });
 
       setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(currentSessionId)) {
+        if (String(s.id) === String(sessionId)) {
           const newMessages = [...s.messages, aiMessage];
           return { ...s, messages: newMessages, title: newTitle || s.title };
         }
@@ -318,8 +318,6 @@ export default function App() {
       setIsTyping(false);
     }
   };
-  
-  
 
   const createNewChat = async (): Promise<string | null> => {
   const newId = Date.now().toString();
@@ -341,8 +339,24 @@ export default function App() {
       body: JSON.stringify(newSession)
     });
 
+    const data = await res.json().catch(() => null);
+
+    console.log("CREATE SESSION:", {
+      status: res.status,
+      ok: res.ok,
+      data
+    });
+
     if (!res.ok) {
-      throw new Error('Failed to create session');
+      console.error("Failed to create session:", data);
+
+      alert(
+        `Gagal membuat chat session.\n\n` +
+        `Status: ${res.status}\n` +
+        `Error: ${data?.error || 'Unknown error'}`
+      );
+
+      return null;
     }
 
     setSessions(prev => [newSession, ...prev]);
@@ -351,8 +365,14 @@ export default function App() {
 
     return newId;
 
-  } catch (e) {
-    console.error("Failed to create session", e);
+  } catch (error) {
+    console.error("Create session network error:", error);
+
+    alert(
+      "Tidak bisa terhubung ke server.\n\n" +
+      "Cek apakah API/backend sedang berjalan."
+    );
+
     return null;
   }
 };
@@ -432,7 +452,7 @@ export default function App() {
         headers: { 'x-user-id': getUserId() }
       });
       setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(sessionId)) {
+        if (String(s.id) === String(currentSessionId)) {
           return { ...s, messages: s.messages.filter(m => String(m.id) !== String(messageId)) };
         }
         return s;
@@ -457,7 +477,7 @@ export default function App() {
         throw new Error(errorData.error || 'Failed to clear session');
       }
       setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(sessionId)) {
+        if (String(s.id) === String(currentSessionId)) {
           return { ...s, messages: [] };
         }
         return s;
