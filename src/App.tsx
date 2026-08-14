@@ -150,7 +150,7 @@ export default function App() {
             setCurrentSessionId(data[0].id);
           }
         } else {
-          await createNewChat();
+          setCurrentSessionId(null);
         }
       } else {
         const errorData = await res.json();
@@ -207,7 +207,18 @@ export default function App() {
   };
 
     const handleSend = async (text: string = input) => {
-    if ((!text.trim() && !selectedImage) || !currentSessionId) return;
+  if (!text.trim() && !selectedImage) return;
+
+  let sessionId = currentSessionId;
+      
+  if (!sessionId) {
+    sessionId = await createNewChat();
+
+    if (!sessionId) {
+      alert("Failed to create chat session.");
+      return;
+    }
+  }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -237,7 +248,7 @@ export default function App() {
           'Content-Type': 'application/json',
           'x-user-id': getUserId()
         },
-        body: JSON.stringify({ ...userMessage, sessionId: currentSessionId })
+        body: JSON.stringify({ ...userMessage, sessionId })
       });
 
       const parts: any[] = [{ text: text || "What is in this image?" }];
@@ -282,7 +293,7 @@ export default function App() {
           'Content-Type': 'application/json',
           'x-user-id': getUserId()
         },
-        body: JSON.stringify({ ...aiMessage, sessionId: currentSessionId, sessionTitle: newTitle })
+        body: JSON.stringify({...aiMessage,sessionId,sessionTitle: newTitle})
       });
 
       setSessions(prev => prev.map(s => {
@@ -310,31 +321,41 @@ export default function App() {
   
   
 
-  const createNewChat = async () => {
-    const newId = Date.now().toString();
-    const newSession: ChatSession = {
-      id: newId,
-      title: 'New Chat',
-      messages: [],
-      createdAt: Date.now()
-    };
+  const createNewChat = async (): Promise<string | null> => {
+  const newId = Date.now().toString();
 
-    try {
-      await fetch('/api/sessions', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-user-id': getUserId()
-        },
-        body: JSON.stringify(newSession)
-      });
-      setSessions(prev => [newSession, ...prev]);
-      setCurrentSessionId(newId);
-      setIsSidebarOpen(false);
-    } catch (e) {
-      console.error("Failed to create session", e);
-    }
+  const newSession: ChatSession = {
+    id: newId,
+    title: 'New Chat',
+    messages: [],
+    createdAt: Date.now()
   };
+
+  try {
+    const res = await fetch('/api/sessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-id': getUserId()
+      },
+      body: JSON.stringify(newSession)
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to create session');
+    }
+
+    setSessions(prev => [newSession, ...prev]);
+    setCurrentSessionId(newId);
+    setIsSidebarOpen(false);
+
+    return newId;
+
+  } catch (e) {
+    console.error("Failed to create session", e);
+    return null;
+  }
+};
 
   const deleteSession = async (id: string, e?: React.MouseEvent) => {
     if (e) {
@@ -411,7 +432,7 @@ export default function App() {
         headers: { 'x-user-id': getUserId() }
       });
       setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(currentSessionId)) {
+        if (String(s.id) === String(sessionId)) {
           return { ...s, messages: s.messages.filter(m => String(m.id) !== String(messageId)) };
         }
         return s;
@@ -436,7 +457,7 @@ export default function App() {
         throw new Error(errorData.error || 'Failed to clear session');
       }
       setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(currentSessionId)) {
+        if (String(s.id) === String(sessionId)) {
           return { ...s, messages: [] };
         }
         return s;
