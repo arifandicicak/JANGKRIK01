@@ -128,13 +128,15 @@ export default function App() {
   const currentSession = useMemo(() => sessions.find(s => String(s.id) === String(currentSessionId)) || null, [sessions, currentSessionId]);
 
   const getUserId = () => {
-    let uid = localStorage.getItem('jangkrik_user_id');
-    if (!uid) {
-      uid = 'user_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-      localStorage.setItem('jangkrik_user_id', uid);
-    }
-    return uid;
-  };
+  let uid = localStorage.getItem('jangkrik_user_id');
+
+  if (!uid) {
+    uid = crypto.randomUUID();
+    localStorage.setItem('jangkrik_user_id', uid);
+  }
+
+  return uid;
+};
 
   const fetchSessions = async () => {
     try {
