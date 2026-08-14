@@ -551,7 +551,7 @@ export default function App() {
 
       {/* Background Effects */}
       <div className="fixed inset-0 grid-bg z-0" />
-      <div className="fixed inset-0 scanline z-10" />
+      <div className="fixed inset-0 scanline z-7" />
       
       {/* Sidebar Backdrop for Mobile */}
       <AnimatePresence>
@@ -742,7 +742,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="font-black text-xl tracking-tighter font-display">JANGKRIK <span className="text-brand-green">AI</span></h1>
-                <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Neural Network v3.1</p>
+                <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">Neural Network v4</p>
               </div>
             </div>
           </div>
@@ -798,7 +798,6 @@ export default function App() {
                 </h2>
                 <p className="text-base md:text-2xl text-white/40 font-medium max-w-xl mx-auto leading-relaxed px-4">
                   The next generation of portfolio interaction. How can I assist you today?
-                  Before asking Jangkrik AI, Please create a new session on three lines in the top left corner
                 </p>
               </div>
 
