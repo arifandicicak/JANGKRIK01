@@ -207,119 +207,136 @@ export default function App() {
       reader.readAsDataURL(file);
     }
   };
-
-    const handleSend = async (text: string = input) => {
+  const handleSend = async (text: string = input) => {
   if (!text.trim() && !selectedImage) return;
 
   let sessionId = currentSessionId;
-      
+  let isBrandNewSession = false;
+
+  // 1. Buat session baru jika belum ada
   if (!sessionId) {
     sessionId = await createNewChat();
-
     if (!sessionId) {
-      alert("Failed to create chat session.");
+      alert("Gagal membuat sesi chat.");
       return;
     }
+    isBrandNewSession = true;
   }
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      text,
-      imageData: selectedImage || undefined,
-      timestamp: Date.now()
-    };
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    role: 'user',
+    text,
+    imageData: selectedImage || undefined,
+    timestamp: Date.now()
+  };
 
-    setSessions(prev => prev.map(s => {
+  // 2. Terapkan pesan ke state dengan aman
+  setSessions(prev => {
+    // Jika baru dibuat, pastikan session target ada di dalam array
+    const exists = prev.some(s => String(s.id) === String(sessionId));
+    if (!exists) {
+      return [{
+        id: sessionId!,
+        title: 'New Chat',
+        messages: [userMessage],
+        createdAt: Date.now()
+      }, ...prev];
+    }
+
+    return prev.map(s => {
       if (String(s.id) === String(sessionId)) {
         return { ...s, messages: [...s.messages, userMessage] };
       }
       return s;
-    }));
-    
-    const currentImage = selectedImage;
-    setInput('');
-    setSelectedImage(null);
-    setIsTyping(true);
+    });
+  });
 
-        try {
-      // Save user message to backend
-      await fetch('/api/messages', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-user-id': getUserId()
-        },
-        body: JSON.stringify({ ...userMessage, sessionId })
-      });
+  const currentImage = selectedImage;
+  setInput('');
+  setSelectedImage(null);
+  setIsTyping(true);
 
-      const parts: any[] = [{ text: text || "What is in this image?" }];
-      if (currentImage) {
-        parts.push({
-          inlineData: {
-            mimeType: "image/jpeg",
-            data: currentImage.split(',')[1]
-          }
-        });
-      }
-          
-      const model = ai.getGenerativeModel({ 
-        model: "gemini-3-flash-preview",
-        systemInstruction: SYSTEM_INSTRUCTION 
-      });
+  try {
+    // Simpan pesan user ke database
+    await fetch('/api/messages', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-user-id': getUserId()
+      },
+      body: JSON.stringify({ ...userMessage, sessionId })
+    });
 
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts }],
-      });
-      
-      const response = await result.response;
-      const responseText = response.text();
-    
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'model',
-        text: responseText || "I'm sorry, I couldn't process that.",
-        timestamp: Date.now()
-      };
-
-      
-
-      const isFirstMessage = currentSession?.messages.length === 0;
-      const newTitle = isFirstMessage ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') : undefined;
-
-      // Save AI message to backend
-      await fetch('/api/messages', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-user-id': getUserId()
-        },
-        body: JSON.stringify({...aiMessage,sessionId,sessionTitle: newTitle})
-      });
-
-      setSessions(prev => prev.map(s => {
-        if (String(s.id) === String(sessionId)) {
-          const newMessages = [...s.messages, aiMessage];
-          return { ...s, messages: newMessages, title: newTitle || s.title };
+    const parts: any[] = [{ text: text || "What is in this image?" }];
+    if (currentImage) {
+      parts.push({
+        inlineData: {
+          mimeType: "image/jpeg",
+          data: currentImage.split(',')[1]
         }
-        return s;
-      }));
-          
-
-    } catch (error: any) {
-      console.error("AI Error:", error);
-      const msg = error.message?.toLowerCase() || "";
-      
-      if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
-        alert("Aduh, Jangkrik capek (Limit). Coba lagi besok ya, jatahnya 1500 chat kok!");
-      } else {
-        alert("Koneksi gagal atau API Key bermasalah. Sedang perbaikan..");
-      }
-    } finally {
-      setIsTyping(false);
+      });
     }
-  };
+
+    const model = ai.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_INSTRUCTION 
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts }],
+    });
+
+    const response = await result.response;
+    const responseText = response.text();
+
+    const aiMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      role: 'model',
+      text: responseText || "I'm sorry, I couldn't process that.",
+      timestamp: Date.now()
+    };
+
+    const newTitle = (isBrandNewSession || currentSession?.messages.length === 0) 
+      ? (text || "Image Query").slice(0, 30) + (text.length > 30 ? '...' : '') 
+      : undefined;
+
+    // Simpan pesan AI ke database
+    await fetch('/api/messages', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-user-id': getUserId()
+      },
+      body: JSON.stringify({ ...aiMessage, sessionId, sessionTitle: newTitle })
+    });
+
+    setSessions(prev => prev.map(s => {
+      if (String(s.id) === String(sessionId)) {
+        return { 
+          ...s, 
+          messages: [...s.messages, aiMessage], 
+          title: newTitle || s.title 
+        };
+      }
+      return s;
+    }));
+
+  } catch (error: any) {
+    console.error("AI Error:", error);
+    const msg = error.message?.toLowerCase() || "";
+
+    if (msg.includes("429") || msg.includes("quota") || msg.includes("limit")) {
+      alert("Sorry, You reached the limit. Try again later!");
+    } else {
+      alert("Connection failed.");
+    }
+  } finally {
+    setIsTyping(false);
+  }
+};
+  
+
 
   const createNewChat = async (): Promise<string | null> => {
   const newId = Date.now().toString();
@@ -341,43 +358,30 @@ export default function App() {
       body: JSON.stringify(newSession)
     });
 
-    const data = await res.json().catch(() => null);
-
-    console.log("CREATE SESSION:", {
-      status: res.status,
-      ok: res.ok,
-      data
-    });
-
     if (!res.ok) {
-      console.error("Failed to create session:", data);
-
-      alert(
-        `Gagal membuat chat session.\n\n` +
-        `Status: ${res.status}\n` +
-        `Error: ${data?.error || 'Unknown error'}`
-      );
-
-      return null;
+      const data = await res.json().catch(() => null);
+      console.error("Failed to create session server-side:", data);
+      // Opsional: Jika backend bermasalah, tetap izinkan fallback lokal/UI
     }
 
+    // Selalu update state lokal
     setSessions(prev => [newSession, ...prev]);
     setCurrentSessionId(newId);
     setIsSidebarOpen(false);
 
     return newId;
-
   } catch (error) {
     console.error("Create session network error:", error);
-
-    alert(
-      "Tidak bisa terhubung ke server.\n\n" +
-      "Cek apakah API/backend sedang berjalan."
-    );
-
-    return null;
+    
+    // Fallback: Tetap buat sesi di UI lokal agar UX tidak terputus
+    setSessions(prev => [newSession, ...prev]);
+    setCurrentSessionId(newId);
+    setIsSidebarOpen(false);
+    
+    return newId;
   }
 };
+
 
   const deleteSession = async (id: string, e?: React.MouseEvent) => {
     if (e) {
