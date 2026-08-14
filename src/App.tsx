@@ -316,7 +316,7 @@ export default function App() {
 
       // Mendukung model gemini-2.5-flash atau gemini-1.5-flash
       const model = ai.getGenerativeModel({ 
-        model: "gemini-2.0-flash",
+        model: "gemini-3.5-flash",
         systemInstruction: SYSTEM_INSTRUCTION 
       });
 
