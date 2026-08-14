@@ -258,15 +258,17 @@ export default function App() {
   setIsTyping(true);
 
   try {
-    // Simpan pesan user ke database
-    await fetch('/api/messages', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'x-user-id': getUserId()
-      },
-      body: JSON.stringify({ ...userMessage, sessionId })
-    });
+  await fetch('/api/messages', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-user-id': getUserId()
+    },
+    body: JSON.stringify({ ...userMessage, sessionId })
+  });
+} catch (dbErr) {
+  console.warn("Gagal simpan pesan user ke DB:", dbErr);
+  }
 
     const parts: any[] = [{ text: text || "What is in this image?" }];
     if (currentImage) {
